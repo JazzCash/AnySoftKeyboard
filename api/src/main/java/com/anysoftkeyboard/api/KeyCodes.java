@@ -42,6 +42,7 @@ public class KeyCodes {
     public static final int VOICE_INPUT = -4;
 
     public static final int DISABLED = 0;
+    public static final int CHECK = 122;
 
     public static final int SPLIT_LAYOUT = -110;
     public static final int MERGE_LAYOUT = -111;

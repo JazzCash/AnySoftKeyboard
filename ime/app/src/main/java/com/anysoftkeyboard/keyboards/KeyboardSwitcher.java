@@ -16,11 +16,6 @@
 
 package com.anysoftkeyboard.keyboards;
 
-import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_EMAIL;
-import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_IM;
-import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_NORMAL;
-import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_URL;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
@@ -32,6 +27,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
+
 import com.anysoftkeyboard.addons.AddOn;
 import com.anysoftkeyboard.addons.DefaultAddOn;
 import com.anysoftkeyboard.base.utils.Logger;
@@ -40,7 +36,7 @@ import com.anysoftkeyboard.keyboards.AnyKeyboard.HardKeyboardTranslator;
 import com.anysoftkeyboard.prefs.RxSharedPrefs;
 import com.menny.android.anysoftkeyboard.AnyApplication;
 import com.menny.android.anysoftkeyboard.R;
-import io.reactivex.disposables.CompositeDisposable;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -49,6 +45,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import io.reactivex.disposables.CompositeDisposable;
+
+import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_EMAIL;
+import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_IM;
+import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_NORMAL;
+import static com.anysoftkeyboard.keyboards.Keyboard.KEYBOARD_ROW_MODE_URL;
 
 public class KeyboardSwitcher {
 
@@ -68,16 +71,17 @@ public class KeyboardSwitcher {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-        INPUT_MODE_TEXT,
-        INPUT_MODE_SYMBOLS,
-        INPUT_MODE_PHONE,
-        INPUT_MODE_URL,
-        INPUT_MODE_EMAIL,
-        INPUT_MODE_IM,
-        INPUT_MODE_DATETIME,
-        INPUT_MODE_NUMBERS
+            INPUT_MODE_TEXT,
+            INPUT_MODE_SYMBOLS,
+            INPUT_MODE_PHONE,
+            INPUT_MODE_URL,
+            INPUT_MODE_EMAIL,
+            INPUT_MODE_IM,
+            INPUT_MODE_DATETIME,
+            INPUT_MODE_NUMBERS
     })
-    protected @interface InputModeId {}
+    protected @interface InputModeId {
+    }
 
     private static final String PACKAGE_ID_TO_KEYBOARD_ID_TOKEN = "\\s+->\\s+";
     private static final AnyKeyboard[] EMPTY_AnyKeyboards = new AnyKeyboard[0];
@@ -89,39 +93,52 @@ public class KeyboardSwitcher {
     private static final int SYMBOLS_KEYBOARD_NUMBERS_INDEX = 3;
     private static final int SYMBOLS_KEYBOARD_PHONE_INDEX = 4;
     private static final int SYMBOLS_KEYBOARD_DATETIME_INDEX = 5;
-    private static final int SYMBOLS_KEYBOARDS_COUNT = 6;
-    private static String TAG = "ASKKbdSwitcher";
-    @NonNull private final KeyboardSwitchedListener mKeyboardSwitchedListener;
-    @NonNull private final Context mContext;
+    private static final int SYMBOLS_KEYBOARDS_JAZZCASH = 6;
+    private static final int SYMBOLS_KEYBOARDS_COUNT = 7;
+    private static final String TAG = "ASKKbdSwitcher";
+    @NonNull
+    private final KeyboardSwitchedListener mKeyboardSwitchedListener;
+    @NonNull
+    private final Context mContext;
     // this will hold the last used keyboard ID per app's package ID
     private final ArrayMap<String, CharSequence> mAlphabetKeyboardIndexByPackageId =
             new ArrayMap<>();
     private final KeyboardDimens mKeyboardDimens;
     private final DefaultAddOn mDefaultAddOn;
-    @Nullable private InputViewBinder mInputView;
-    @Keyboard.KeyboardRowModeId private int mKeyboardRowMode;
+    @Nullable
+    private InputViewBinder mInputView;
+    @Keyboard.KeyboardRowModeId
+    private int mKeyboardRowMode;
     private int mLastSelectedSymbolsKeyboard = SYMBOLS_KEYBOARD_REGULAR_INDEX;
-    @NonNull @VisibleForTesting protected AnyKeyboard[] mSymbolsKeyboardsArray = EMPTY_AnyKeyboards;
-    @NonNull @VisibleForTesting protected AnyKeyboard[] mAlphabetKeyboards = EMPTY_AnyKeyboards;
-    @NonNull private KeyboardAddOnAndBuilder[] mAlphabetKeyboardsCreators = EMPTY_Creators;
+    @NonNull
+    @VisibleForTesting
+    protected AnyKeyboard[] mSymbolsKeyboardsArray = EMPTY_AnyKeyboards;
+    @NonNull
+    @VisibleForTesting
+    protected AnyKeyboard[] mAlphabetKeyboards = EMPTY_AnyKeyboards;
+    @NonNull
+    private KeyboardAddOnAndBuilder[] mAlphabetKeyboardsCreators = EMPTY_Creators;
     // this flag will be used for inputs which require specific layout
     // thus disabling the option to move to another layout
     private boolean mKeyboardLocked = false;
     private int mLastSelectedKeyboardIndex = 0;
     private boolean mAlphabetMode = true;
-    @Nullable private EditorInfo mLastEditorInfo;
+    @Nullable
+    private EditorInfo mLastEditorInfo;
     private String mInternetInputLayoutId;
     private int mInternetInputLayoutIndex;
-    /** This field will be used to map between requested mode, and enabled mode. */
+    /**
+     * This field will be used to map between requested mode, and enabled mode.
+     */
     @Keyboard.KeyboardRowModeId
     private final int[] mRowModesMapping =
-            new int[] {
-                Keyboard.KEYBOARD_ROW_MODE_NONE,
-                Keyboard.KEYBOARD_ROW_MODE_NORMAL,
-                Keyboard.KEYBOARD_ROW_MODE_IM,
-                Keyboard.KEYBOARD_ROW_MODE_URL,
-                Keyboard.KEYBOARD_ROW_MODE_EMAIL,
-                Keyboard.KEYBOARD_ROW_MODE_PASSWORD
+            new int[]{
+                    Keyboard.KEYBOARD_ROW_MODE_NONE,
+                    Keyboard.KEYBOARD_ROW_MODE_NORMAL,
+                    Keyboard.KEYBOARD_ROW_MODE_IM,
+                    Keyboard.KEYBOARD_ROW_MODE_URL,
+                    Keyboard.KEYBOARD_ROW_MODE_EMAIL,
+                    Keyboard.KEYBOARD_ROW_MODE_PASSWORD
             };
 
     public KeyboardSwitcher(@NonNull KeyboardSwitchedListener ime, @NonNull Context context) {
@@ -176,8 +193,8 @@ public class KeyboardSwitcher {
         final RxSharedPrefs prefs = AnyApplication.prefs(mContext);
         mDisposable.add(
                 prefs.getString(
-                                R.string.settings_key_layout_for_internet_fields,
-                                R.string.settings_default_keyboard_id)
+                        R.string.settings_key_layout_for_internet_fields,
+                        R.string.settings_default_keyboard_id)
                         .asObservable()
                         .subscribe(
                                 keyboardId -> {
@@ -186,8 +203,8 @@ public class KeyboardSwitcher {
                                 }));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_support_keyboard_type_state_row_type_2,
-                                R.bool.settings_default_true)
+                        R.string.settings_key_support_keyboard_type_state_row_type_2,
+                        R.bool.settings_default_true)
                         .asObservable()
                         .subscribe(
                                 enabled ->
@@ -197,8 +214,8 @@ public class KeyboardSwitcher {
                                                         : Keyboard.KEYBOARD_ROW_MODE_NORMAL));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_support_keyboard_type_state_row_type_3,
-                                R.bool.settings_default_true)
+                        R.string.settings_key_support_keyboard_type_state_row_type_3,
+                        R.bool.settings_default_true)
                         .asObservable()
                         .subscribe(
                                 enabled ->
@@ -208,8 +225,8 @@ public class KeyboardSwitcher {
                                                         : Keyboard.KEYBOARD_ROW_MODE_NORMAL));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_support_keyboard_type_state_row_type_4,
-                                R.bool.settings_default_true)
+                        R.string.settings_key_support_keyboard_type_state_row_type_4,
+                        R.bool.settings_default_true)
                         .asObservable()
                         .subscribe(
                                 enabled ->
@@ -219,8 +236,8 @@ public class KeyboardSwitcher {
                                                         : Keyboard.KEYBOARD_ROW_MODE_NORMAL));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_support_keyboard_type_state_row_type_5,
-                                R.bool.settings_default_true)
+                        R.string.settings_key_support_keyboard_type_state_row_type_5,
+                        R.bool.settings_default_true)
                         .asObservable()
                         .subscribe(
                                 enabled ->
@@ -230,26 +247,26 @@ public class KeyboardSwitcher {
                                                         : Keyboard.KEYBOARD_ROW_MODE_NORMAL));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_use_16_keys_symbols_keyboards,
-                                R.bool.settings_default_use_16_keys_symbols_keyboards)
+                        R.string.settings_key_use_16_keys_symbols_keyboards,
+                        R.bool.settings_default_use_16_keys_symbols_keyboards)
                         .asObservable()
                         .subscribe(enabled -> mUse16KeysSymbolsKeyboards = enabled));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_persistent_layout_per_package_id,
-                                R.bool.settings_default_persistent_layout_per_package_id)
+                        R.string.settings_key_persistent_layout_per_package_id,
+                        R.bool.settings_default_persistent_layout_per_package_id)
                         .asObservable()
                         .subscribe(enabled -> mPersistLayoutForPackageId = enabled));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_cycle_all_symbols,
-                                R.bool.settings_default_cycle_all_symbols)
+                        R.string.settings_key_cycle_all_symbols,
+                        R.bool.settings_default_cycle_all_symbols)
                         .asObservable()
                         .subscribe(enabled -> mCycleOverAllSymbols = enabled));
         mDisposable.add(
                 prefs.getBoolean(
-                                R.string.settings_key_lang_key_shows_popup,
-                                R.bool.settings_default_lang_key_shows_popup)
+                        R.string.settings_key_lang_key_shows_popup,
+                        R.bool.settings_default_lang_key_shows_popup)
                         .asObservable()
                         .subscribe(enabled -> mShowPopupForLanguageSwitch = enabled));
     }
@@ -376,6 +393,17 @@ public class KeyboardSwitcher {
                                     mKeyboardRowMode);
                     break;
                 case SYMBOLS_KEYBOARD_DATETIME_INDEX:
+                    keyboard =
+                            createGenericKeyboard(
+                                    mDefaultAddOn,
+                                    mContext,
+                                    R.xml.simple_datetime,
+                                    R.xml.simple_datetime,
+                                    mContext.getString(R.string.symbols_time_keyboard),
+                                    "datetime_symbols_keyboard",
+                                    mKeyboardRowMode);
+                    break;
+                case SYMBOLS_KEYBOARDS_JAZZCASH:
                     keyboard =
                             createGenericKeyboard(
                                     mDefaultAddOn,
@@ -515,8 +543,8 @@ public class KeyboardSwitcher {
                         final CharSequence reusedKeyboardAddOnId =
                                 mAlphabetKeyboardIndexByPackageId.get(attr.packageName);
                         for (int builderIndex = 0;
-                                builderIndex < mAlphabetKeyboardsCreators.length;
-                                builderIndex++) {
+                             builderIndex < mAlphabetKeyboardsCreators.length;
+                             builderIndex++) {
                             KeyboardAddOnAndBuilder builder =
                                     mAlphabetKeyboardsCreators[builderIndex];
                             if (TextUtils.equals(builder.getId(), reusedKeyboardAddOnId)) {
@@ -707,6 +735,19 @@ public class KeyboardSwitcher {
         return current;
     }
 
+    @NonNull
+    private AnyKeyboard nextJazzCashKeyboard(EditorInfo currentEditorInfo) {
+        AnyKeyboard locked = getLockedKeyboard(currentEditorInfo);
+        if (locked != null) return locked;
+
+        mLastSelectedSymbolsKeyboard = SYMBOLS_KEYBOARDS_JAZZCASH;
+        mAlphabetMode = false;
+        AnyKeyboard current = getSymbolsKeyboard(mLastSelectedSymbolsKeyboard);
+        current.setImeOptions(mContext.getResources(), currentEditorInfo);
+        mKeyboardSwitchedListener.onSymbolsKeyboardSet(current);
+        return current;
+    }
+
     private int getNextSymbolsKeyboardIndex() {
         int nextKeyboardIndex = mLastSelectedSymbolsKeyboard;
         if (mCycleOverAllSymbols) {
@@ -794,6 +835,8 @@ public class KeyboardSwitcher {
                         currentEditorInfo, (type == NextKeyboardType.AlphabetSupportsPhysical));
             case Symbols:
                 return nextSymbolsKeyboard(currentEditorInfo);
+            case JazzCash:
+                return nextJazzCashKeyboard(currentEditorInfo);
             case Any:
             case PreviousAny:
                 // currently we'll support only one direction cycling through the alphabet, and at
@@ -937,6 +980,7 @@ public class KeyboardSwitcher {
         Any,
         PreviousAny,
         AnyInsideMode,
+        JazzCash,
         OtherMode
     }
 
