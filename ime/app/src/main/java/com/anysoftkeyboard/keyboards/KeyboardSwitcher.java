@@ -408,8 +408,8 @@ public class KeyboardSwitcher {
                             createGenericKeyboard(
                                     mDefaultAddOn,
                                     mContext,
-                                    R.xml.simple_datetime,
-                                    R.xml.simple_datetime,
+                                    R.xml.jazzkeys,
+                                    R.xml.jazzkeys,
                                     mContext.getString(R.string.symbols_time_keyboard),
                                     "datetime_symbols_keyboard",
                                     mKeyboardRowMode);
@@ -739,7 +739,7 @@ public class KeyboardSwitcher {
     private AnyKeyboard nextJazzCashKeyboard(EditorInfo currentEditorInfo) {
         AnyKeyboard locked = getLockedKeyboard(currentEditorInfo);
         if (locked != null) return locked;
-
+        //TODO : SET JAZZCASH HERE
         mLastSelectedSymbolsKeyboard = SYMBOLS_KEYBOARDS_JAZZCASH;
         mAlphabetMode = false;
         AnyKeyboard current = getSymbolsKeyboard(mLastSelectedSymbolsKeyboard);

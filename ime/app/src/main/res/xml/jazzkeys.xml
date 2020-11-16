@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="21%p"
+    android:horizontalGap="4%p"
+    android:verticalGap="1.5%p"
+    android:keyHeight="80dp">
+
+    <Row>
+        <Key
+            android:codes="-1001"
+            android:keyEdgeFlags="left"
+            android:keyIcon="@drawable/ic_send_money_new" />
+
+        <Key
+            android:codes="1002"
+            android:keyIcon="@drawable/school_fees" />
+        <Key
+            android:codes="1003"
+            android:keyIcon="@drawable/request_money" />
+
+        <Key
+            android:codes="1004"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/ic_paybill"/>
+
+    </Row>
+
+    <Row android:rowEdgeFlags="bottom">
+        <Key
+            android:codes="1005"
+            android:keyEdgeFlags="left"
+            android:keyIcon="@drawable/ic_qrscan_enable_disable" />
+
+        <Key
+            android:codes="1006"
+             android:keyIcon="@drawable/ic_busticket" />
+        <Key
+            android:codes="1007"
+            android:keyIcon="@drawable/ic_mtag" />
+
+        <Key
+            android:codes="1008"
+           android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/ic_mtag" />
+
+    </Row>
+
+
+</Keyboard>

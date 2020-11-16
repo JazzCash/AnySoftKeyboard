@@ -373,6 +373,18 @@ public abstract class AnySoftKeyboard extends AnySoftKeyboardColorizeNavBar {
         final InputConnection ic = getCurrentInputConnection();
 
         switch (primaryCode) {
+            case KeyCodes.JAZZCASH:
+
+                getKeyboardSwitcher()
+                        .nextKeyboard(
+                                getCurrentInputEditorInfo(), NextKeyboardType.JazzCash);
+                Logger.d(TAG, "JazzCash is pressed");
+                break;
+            case KeyCodes.JAZZCASH_SENDMONEY:
+                ic.commitText("Send Money is Pressed", 1);
+                Logger.d(TAG, "SendMoney is pressed");
+                break;
+
             case KeyCodes.DELETE:
                 if (ic != null) {
                     // we do backword if the shift is pressed while pressing
@@ -667,13 +679,6 @@ public abstract class AnySoftKeyboard extends AnySoftKeyboardColorizeNavBar {
                 }
                 break;
 
-            case KeyCodes.CHECK:
-
-                getKeyboardSwitcher()
-                        .nextKeyboard(
-                                getCurrentInputEditorInfo(), NextKeyboardType.JazzCash);
-                Logger.d(TAG, "This is pressed");
-                break;
             case KeyCodes.TAB:
                 sendTab();
                 break;
