@@ -6,14 +6,14 @@ dependencies {
     implementation project(':ime:base')
     implementation project(':ime:base-rx')
 
-    implementation "com.android.support:preference-v7:$supportLibVersion"
+    implementation "com.android.support:preference-v7:28.0.0"
 
-    api 'junit:junit:4.13'
-    api("org.robolectric:robolectric:$robolectricVersion") {
+    api 'junit:junit:4.13.1'
+    api("org.robolectric:robolectric:4.4") {
         exclude group: 'com.google.auto.service', module: 'auto-service'
     }
-    api "org.robolectric:shadows-supportv4:$robolectricVersion"
+    api "org.robolectric:shadows-supportv4:4.4"
     api 'org.mockito:mockito-core:2.23.0'
     api 'com.github.menny:JUnitTestsGrouping:0.3.0'
-    api 'androidx.test:core:1.2.0'
+    api 'androidx.test:core:1.3.0'
 }

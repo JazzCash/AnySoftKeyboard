@@ -6,9 +6,9 @@ dependencies {
     implementation project(':ime:base')
     implementation project(':ime:base-rx')
 
-    implementation "com.android.support:preference-v7:$supportLibVersion"
+    implementation "com.android.support:preference-v7:28.0.0"
 
-    api 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
+    api 'com.f2prateek.rx.preferences2:rx-preferences:2.0.1'
 
     testImplementation project(':ime:base-test')
 }

@@ -17,7 +17,7 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:support-core-utils:$supportLibVersion"
+    implementation "com.android.support:support-core-utils:28.0.0"
     implementation project(':ime:base')
     implementation project(':ime:prefs')
 

@@ -10,8 +10,8 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
-    compileSdkVersion sdkCompileVersion
-    buildToolsVersion androidBuildTools
+    compileSdkVersion 28
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
         minSdkVersion sdkMinimumVersion
